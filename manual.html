@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Field manual · Idle Control Lab</title>
+<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="neural.css">
+<style>
+article {max-width:82ch;margin:auto}article h2 {margin:32px 0 10px}article h3 {margin:16px 0 6px}article p {margin:8px 0;color:var(--foreground)}
+article li {margin-bottom:6px}pre {white-space:pre-wrap;overflow-wrap:anywhere;background:var(--panel);padding:14px;border:1px solid var(--border);border-radius:6px}
+figure {margin:14px 0}figure svg {width:100%;height:auto;display:block;max-width:740px}figure svg .box {fill:var(--panel);stroke:var(--border)}figure svg text {font:16px system-ui;fill:var(--foreground)}figure svg .sub {font-size:14px;fill:var(--muted-foreground)}
+figure path.flow {stroke:var(--action);stroke-width:2;fill:none}figcaption {font-size:14px;color:var(--muted-foreground)}
+@media print {nav,footer{display:none}main{padding:0}article{max-width:none}h2,h3{break-after:avoid}figure,pre,table{break-inside:avoid}body{font-size:11pt}}
+</style></head><body><main>
+<nav aria-label="Lab pages"><a href="index.html">Idle simulator</a><a href="neural.html">Neural dynamics</a><a href="manual.html" aria-current="page">Manual</a></nav>
+<article><h1>Idle Control Lab manual</h1><p>Follow one edit from a Rust parameter to a change in prediction, then to a path through phase space.</p>
+
+<h2>1. Make one edit you can predict</h2>
+<ol><li>Open <a href="neural.html">Neural dynamics</a>, choose <b>Idle engine</b>, and pause around 3 seconds into the A/C cycle. The reference, trained and edited engines start at the same 750 RPM.</li>
+<li>Keep the default Y coordinate, <b>Output bias</b>. Move its offset to <b>+0.25</b>. At identical inputs the network now predicts exactly <b>200 RPM/s more acceleration</b>. The network’s output scale is 800 RPM/s per unit. As the edited engine gains speed, its RPM input changes, so the acceleration difference can change too.</li>
+<li>Watch the orange point move on the loss surface and the orange engine trace separate from the dashed trained trace. The whole event is recomputed from its original state, at the same playhead. Drag either plot to rotate it. Use the time slider to inspect a particular instant.</li>
+<li>Choose <b>Restore trained values</b>. The edited loss returns to the trained loss and the two prediction traces coincide.</li></ol>
+
+<h2>2. Read the axes before reading the shape</h2>
+<figure><svg viewBox="0 0 720 205" role="img" aria-label="The left plot varies model parameters and measures prediction loss. The right plot varies state and measures energy.">
+<rect class="box" x="3" y="4" width="347" height="196" rx="8"/><rect class="box" x="365" y="4" width="352" height="196" rx="8"/>
+<text x="18" y="31">Training loss</text><text x="380" y="31">Hamiltonian energy</text>
+<g class="flow"><path class="flow" d="M55 145V61 M55 145L176 168 M55 145L121 102 M80 89 Q142 170 218 83 M97 79 Q150 148 233 73 M116 70 Q163 127 247 64"/>
+<path class="flow" d="M416 145V61 M416 145L532 168 M416 145L481 102 M437 84 Q501 173 622 77 M455 79 Q516 148 638 69 M472 73 Q537 128 654 60"/></g>
+<text class="sub" x="66" y="64">error</text><text class="sub" x="184" y="175">Δ weight</text><text class="sub" x="123" y="106">Δ bias</text>
+<text class="sub" x="425" y="62">joules</text><text class="sub" x="540" y="175">position</text><text class="sub" x="480" y="107">momentum</text></svg>
+<figcaption>The two surfaces can look alike. A point on the left selects a predictor. A point on the right selects a mechanical state.</figcaption></figure>
+<p><b>Loss landscape.</b> The horizontal coordinates are offsets in two selected weights or biases. Height is mean squared error (MSE) on the training examples. Every other coefficient stays at its trained value. The ring marks the trained network, and the filled point marks your edits. The displayed grid samples 25 × 25 pairs over ±0.8. The readout evaluates your exact slider values. Selecting a new axis resets both offsets so that the trained comparison stays on the same slice. The baseline is the best training checkpoint observed in this run.</p>
+<p><b>Engine phase trajectory.</b> The three coordinates are actual RPM minus target, RPM/s, and time. The time axis separates visits to the same RPM error. Each point describes a moment in an event. The resulting line is a projection of states that also include manifold torque, delay history and controller memory.</p>
+<p><b>Hamiltonian phase trajectory.</b> In spring–mass mode the coordinates are position q, momentum p, and energy H. The translucent mesh is the edited H over the training domain. The three paths use their respective energy functions. All use H(0,0) as the zero reference. The renderer scales each axis independently, so compare physical readings and loss values across views.</p>
+
+<h2>3. Follow the data through the engine</h2>
+<figure><svg viewBox="0 0 720 146" role="img" aria-label="The reference controller and air delay supply the same torque and load to three branches: physical reference, trained network, edited network. Each computes its own acceleration and integrates RPM.">
+<rect class="box" x="3" y="29" width="179" height="85" rx="7"/><text x="17" y="62">Reference PID</text><text class="sub" x="17" y="86">Valve + delayed air</text>
+<path class="flow" d="M183 70H224 M224 25V120 M224 25H249 M224 70H249 M224 120H249"/>
+<text x="256" y="30">Torque balance</text><text x="256" y="76">Trained network</text><text x="256" y="126">Edited network</text>
+<path class="flow" d="M398 25H433 M398 70H433 M398 120H433"/><text class="sub" x="441" y="30">acceleration → reference RPM</text><text class="sub" x="441" y="76">acceleration → trained RPM</text><text class="sub" x="441" y="126">acceleration → edited RPM</text></svg>
+<figcaption>All branches see the same delivered torque and accessory load. Each branch feeds back its own RPM into its next prediction.</figcaption></figure>
+<p>The physical reference computes acceleration from net torque and inertia. The ordinary network learns that same acceleration mapping from synthetic labelled operating points. Its three inputs are RPM, delivered air torque and accessory torque. Instantaneous throttle alone would leave out the air delay. During replay the physical reference alone drives the PID and manifold, using settings saved on the idle-simulator page. The PID bench separately closes the control loop around each candidate controller.</p>
+<p>The replay uses 10 ms steps and saves a frame every 40 ms over 12 seconds. In the A/C event the 10 N·m load turns on at 2 s and off at 7 s. In the throttle event an 8% pulse lasts from 2 to 2.6 s. Learned rollouts can leave the training range after large edits. Treat their behavior there as extrapolation. The neural replay models running-engine speed dynamics; the full idle bench includes the separate low-speed stall latch.</p>
+
+<h2>4. Try the same edit in an HNN</h2>
+<p>Select <b>Spring–mass</b>. Set Y to <b>Output bias</b> and try +0.25. You have added a constant to the scalar H. Its derivatives, the predicted trajectory and the loss all stay the same. The surface is flat along that coordinate. Now select <b>H1 · hidden bias</b> for Y and repeat. That bias changes the slopes of H, so the motion can change.</p>
+<pre>H(q,p) = Σ vⱼ (wⱼq q + wⱼp p + bⱼ)² + bₒ
+dq/dt = ∂H/∂p             dp/dt = −∂H/∂q</pre>
+<p>The training labels are state derivatives for a 1 kg mass and a spring of 1 N/m. The square activation gives the network a family of quadratic Hamiltonians that contains this oscillator exactly. Its very low held-out error measures a fit within that family. It does not establish performance on engines or nonlinear pendulums. RK4 advances the learned continuous-time field, so finite-step energy drift is possible. For a driven, damped engine, a Hamiltonian model would need inputs and dissipation or a broader system boundary.</p>
+
+<h2>5. Walk through the Rust code</h2>
+<h3>Build examples and evaluate the network</h3>
+<p><code>src/network.rs</code> defines <code>dataset</code>, <code>evaluate</code>, <code>gradient</code> and <code>Fit::train</code>. The idle dataset samples 475–1375 RPM, 6–58 N·m delivered torque and 0–12 N·m accessory load. Inputs are scaled around 750 RPM and 20 N·m. The HNN samples q and p independently in [−1, 1] in the stated SI units. Each model uses 112 training examples and 192 held-out examples from a second deterministic seed.</p>
+<pre>parameters of one hidden unit = [input weights…, hidden bias, output weight]
+idle: 4 × (3 + 2) + 1 = 21 parameters
+HNN:  4 × (2 + 2) + 1 = 17 parameters</pre>
+<p>The idle learner accumulates <code>v * z.tanh()</code>. The HNN first accumulates <code>v * z * z</code> into H, then forms its field directly in Rust:</p>
+<pre>field[0] += 2.0 * v * z * u[1];  // ∂H/∂p
+field[1] -= 2.0 * v * z * u[0];  // −∂H/∂q</pre>
+<h3>Optimize a baseline</h3>
+<p><code>Fit::train</code> seeds the parameters and runs 900 full-batch Adam updates. It compares training loss every tenth update and keeps the best checkpoint. For idle, the model minimizes the squared acceleration error after division by 800 RPM/s. For the HNN, it minimizes the mean of the two squared derivative errors in normalized units (1 m/s and 1 N). Held-out RMSE is reported in RPM/s for idle and normalized derivative units for the HNN. Held-out examples never determine the checkpoint.</p>
+<h3>Change a weight and trace its consequences</h3>
+<p><code>src/lib.rs</code> owns <code>Lab</code>. <code>Lab::slice</code> copies the trained parameters, replaces two coordinates, and evaluates training loss for each mesh vertex. <code>lab_edit</code> handles a live slider event. It adds both offsets to trained values, recomputes exact losses and rebuilds the trajectories. <code>src/motion.rs</code> contains the torque balance integration and fourth-order Runge–Kutta integrator. <code>neural.js</code> reads Rust’s numeric buffers, projects the 3D coordinates and draws them. The packaged Rust desktop shell lives in <code>desktop/src/main.rs</code>.</p>
+<h3>Reproduce the checks</h3>
+<pre>cargo test --release -p idle-neural
+node --test
+./script/build-neural.sh
+./script/build_and_run.sh --verify</pre>
+<p>The Rust tests compare analytic training gradients with finite differences, sample a loss slice against exact edits, check energy-offset invariance and follow conservation over a rollout. The JavaScript tests exercise the idle controller, A/B benchmark and PID search. The offline browser entry is <code>neural.html</code>. Its checked-in WebAssembly can be rebuilt from the same Rust crate.</p>
+
+<h2>6. Compare control strategies</h2>
+<p>On <a href="index.html">Idle simulator</a>, select <b>Compare A/C strategies</b> to hold gains fixed while switching load feedforward. Select <b>Optimize gains</b> to hold the strategy fixed while searching P/I/D. Both use three repeatable events. Inspect RPM, valve command, or the phase trajectory for an individual event before applying a proposal. The PID benchmark score trades RPM error against valve movement. The neural MSE measures prediction error on examples. Each optimizer answers its own question.</p>
+<p>The original HNN authors explain the scalar-energy construction and derivative training. The loss-landscape paper describes why visualizing only a slice of parameter space matters. This lab uses literal coordinate offsets so you can identify the weight or bias you changed. <a href="https://greydanus.github.io/2019/05/15/hamiltonian-nns/">Greydanus, Dzamba and Yosinski</a> · <a href="https://proceedings.neurips.cc/paper_files/paper/2018/hash/a41b3bb3e6b050b6c9067c67f663b915-Abstract.html">Li and colleagues</a></p>
+</article></main></body></html>

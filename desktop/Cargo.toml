@@ -1,0 +1,15 @@
+[package]
+name = "idle-control-lab"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Offline desktop simulator for idle control and neural dynamics"
+publish = false
+
+[dependencies]
+tao = "0.35.3"
+open = "5"
+wry = { version = "=0.57.0", default-features = false }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+wry = { version = "=0.57.0", default-features = false, features = ["os-webview"] }

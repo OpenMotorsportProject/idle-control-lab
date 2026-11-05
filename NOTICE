@@ -1,0 +1,6 @@
+Idle Control Lab
+Copyright 2026 Idle Control Lab contributors
+
+This distribution includes a WebAssembly module compiled with Rust.
+See third-party/ for the Rust library notices. Desktop dependencies and
+system WebView implementations are separately licensed.

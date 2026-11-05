@@ -1,0 +1,29 @@
+nav {display:flex;flex-wrap:wrap;gap:18px;margin-bottom:24px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+a {color:var(--action);text-underline-offset:3px}
+nav a {font-size:14px;color:var(--muted-foreground);text-decoration:none}
+nav a[aria-current=page] {font-weight:650;color:var(--action);text-decoration:underline}
+.model-choice {font-size:13px;color:var(--muted-foreground)}
+.model-choice select {display:block;margin:4px 0 0}
+.metrics,.neural-plots,.neural-controls {display:grid;gap:16px}
+.metrics {grid-template-columns:repeat(4,minmax(0,1fr));border-block:1px solid var(--border);padding:14px 0}
+.metrics span {display:block;color:var(--muted-foreground);font-size:13px}
+.metrics strong {font-size:clamp(20px,2.15vw,30px);font-weight:560;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.neural-plots,.neural-controls {grid-template-columns:repeat(2,minmax(0,1fr));margin-top:17px}
+.graph,.neural-controls section {min-width:0;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px}
+.graph p,.neural-controls p,.neural-controls label,.key,footer {font-size:14px}
+.graph canvas {width:100%;height:clamp(240px,26vw,315px);display:block;touch-action:none;cursor:grab}
+.graph canvas:active {cursor:grabbing}
+.graph canvas:focus-visible {outline:2px solid var(--action)}
+.key {display:flex;gap:15px;flex-wrap:wrap;justify-content:center;color:var(--muted-foreground)}
+.key span::before {content:'';display:inline-block;width:14px;margin-right:5px;vertical-align:middle}
+.ref-key::before {border-top:3px dotted var(--muted-foreground)}
+.base-key::before {border-top:3px dashed light-dark(#285daa,#85aeef)}
+.edit-key::before {border-top:3px solid light-dark(#bc4522,#ff9b78)}
+.neural-controls label {display:block;font-weight:520}
+.neural-controls p {margin:3px 0 11px}
+.parameter {display:grid;grid-template-columns:1.25fr 1fr;gap:13px;align-items:center}
+.parameter select,.neural-controls select {width:100%;margin:3px 0 7px}
+.parameter output,.neural-controls output {float:right;font-size:13px}
+.neural-controls .reading {margin:11px 0 0;font-variant-numeric:tabular-nums}
+@media(max-width:760px){.neural-plots,.neural-controls {grid-template-columns:1fr}.metrics {grid-template-columns:1fr 1fr}.model-choice {width:100%}}
+@media(max-width:410px){.parameter {grid-template-columns:1fr}.parameter input {margin-bottom:6px}}

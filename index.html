@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Idle Control Lab</title>
+  <link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="neural.css">
+  <script defer src="model.js"></script>
+  <script defer src="optimizer.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+<main id="live-idle-control">
+  <nav aria-label="Lab pages"><a href="index.html" aria-current="page">Idle simulator</a><a href="neural.html">Neural dynamics</a><a href="manual.html">Manual</a></nav>
+  <header><div><h1>Idle Control Lab</h1><p>Warm engine in neutral</p></div>
+    <div class="actions"><span data-status role="status"></span><button type="button" data-run>Pause</button></div>
+  </header>
+
+  <div class="instruments">
+    <div><span>Engine speed</span><strong><b data-rpm>750</b> <small>RPM</small></strong></div>
+    <div><span>Idle valve command</span><strong data-valve>32%</strong></div>
+    <div><span>Control mode</span><strong class="mode" data-mode>Idle control active</strong></div>
+  </div>
+
+  <div class="plots">
+    <section><div class="plot-head"><h2>Engine speed</h2><span class="legend">Target</span></div>
+      <svg data-chart="speed" role="img" aria-label="Engine speed and dashed target over the last twelve simulated seconds"></svg></section>
+    <section><div class="plot-head"><h2>Phase plot</h2></div>
+      <svg data-chart="phase" role="img" aria-label="Actual RPM minus target against the rate of RPM change"></svg></section>
+  </div>
+
+  <div class="workbench">
+    <section><h2>Engine inputs</h2>
+      <label><span>Target idle <output data-value="target"></output></span><input type="range" data-key="target" min="600" max="1100" step="10" value="750"></label>
+      <label><span>Driver throttle <output data-value="throttle"></output></span><input type="range" data-key="throttle" min="0" max="20" step="0.5" value="1"></label>
+      <div class="actions"><button type="button" data-blip>Blip throttle</button><label class="check"><input type="checkbox" data-ac>A/C load (+10 N·m)</label></div>
+    </section>
+    <section><h2>Idle PID gains</h2>
+      <label><span>P · Proportional <output data-value="p"></output></span><input type="range" data-key="p" min="0" max="70" step="1" value="35"></label>
+      <label><span>I · Integral <output data-value="i"></output></span><input type="range" data-key="i" min="0" max="60" step="1" value="32"></label>
+      <label><span>D · Derivative <output data-value="d"></output></span><input type="range" data-key="d" min="0" max="14" step="0.5" value="4"></label>
+      <label class="check"><input type="checkbox" id="feedforward">A/C load feedforward</label>
+    </section>
+      <section><h2>Controller test bench</h2>
+      <label for="priority">Tuning priority</label>
+      <select id="priority"><option value="balanced">Balanced</option><option value="speed">Tighter RPM control</option><option value="smooth">Less valve movement</option></select>
+      <p>Test the current target against an A/C cycle, a throttle release, and a 100 RPM target step.</p>
+      <div class="actions"><button class="primary" type="button" id="optimize">Optimize gains</button><button type="button" id="cancel" hidden>Cancel</button><button type="button" id="strategy">Compare A/C strategies</button></div>
+      <p id="opt-status" role="status" aria-live="polite"></p>
+    </section>
+  </div>
+
+  <section id="results" hidden aria-labelledby="comparison-title">
+    <div class="result-head"><div><h2 id="comparison-title" tabindex="-1">Controller comparison</h2><p id="result-summary"></p></div>
+      <button class="primary" type="button" id="apply">Apply proposed gains</button></div>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Benchmark</th><th scope="col">Starting tune</th><th scope="col">Proposed tune</th></tr></thead>
+      <tbody id="comparison"></tbody>
+    </table></div>
+    <div class="replay">
+      <div class="replay-controls"><label>Test event <select id="event"><option value="0">A/C on and off</option><option value="1">Throttle release</option><option value="2">Target step</option></select></label>
+        <label>Signal <select id="signal"><option value="rpm">Engine speed</option><option value="valve">Idle valve command</option><option value="phase">RPM phase trajectory</option></select></label>
+        <div class="keys"><span class="before">Starting tune</span><span class="after">Proposed tune</span></div></div>
+      <svg id="replay-plot" role="img" aria-label="Benchmark traces comparing starting and proposed gains"></svg>
+    </div>
+    <details><summary>Results by event</summary><div class="table-scroll"><table>
+      <thead><tr><th scope="col">Event</th><th scope="col">Starting mean error</th><th scope="col">Proposed mean error</th></tr></thead>
+      <tbody id="event-rows"></tbody>
+    </table></div></details>
+  </section>
+
+  <footer><details><summary>Engine model and benchmark</summary>
+    <p>The idle-air valve starts at 32%. The throttle blip adds 8 percentage points for 0.6 s. The idle loop holds its last valve command at 2% driver throttle and resumes at 1% or below. Opening the lab for the first time shows a single blip.</p>
+    <p>For a 100 RPM shortfall, P adds percentage points of valve command and I adds percentage points per second. For a 100 RPM/s rise, D subtracts percentage points of valve command. This illustrative model includes air delay, inertia and drag. It omits spark control and individual combustion cycles.</p>
+    <p>The optimizer starts each event from a warmed engine with the pedal released and A/C off. It scores mean RPM error, worst RPM error, valve movement and time at a valve limit. A stalled trial receives a penalty. The tuning priority changes the weights. Lower scores are better.</p>
+    <p>Compare A/C strategies holds P, I and D fixed and switches only load feedforward. When enabled, the idle loop requests 16 extra valve percentage points while the compressor is engaged. This compensates for the modeled 10 N·m load after the airflow delay.</p>
+    <p>Settings are saved in this browser when local storage is available. Reset restores 750 RPM, closed throttle and gains of 20 / 10 / 2.</p>
+    </details><button type="button" data-reset>Reset to defaults</button></footer>
+</main>
+</body>
+</html>

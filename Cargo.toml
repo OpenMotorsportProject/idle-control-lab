@@ -1,0 +1,17 @@
+[package]
+name = "idle-neural"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Neural dynamics engine for Idle Control Lab"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[workspace]
+members = ["desktop"]
+default-members = ["."]
+
+[profile.release]
+opt-level = 2

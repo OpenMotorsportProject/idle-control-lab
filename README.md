@@ -1,6 +1,10 @@
 # Idle Control Lab
 
-Open **index.html** in a browser. The simulator, PID search and trial replays run entirely from the files in this directory. On macOS, double-click the file or run `open index.html`.
+Adjust the throttle and PID gains in the idle simulator, or change a network weight in the neural lab to see how its loss and motion change. Both run in your browser.
+
+**[Launch the idle simulator](https://openmotorsportproject.github.io/idle-control-lab/)** · [Open the neural lab](https://openmotorsportproject.github.io/idle-control-lab/neural.html) · [Read the illustrated manual](https://openmotorsportproject.github.io/idle-control-lab/manual.html)
+
+To use the lab offline, extract the source archive and open **index.html** in a browser.
 
 The first launch uses the settings saved from the original experiment (750 RPM target, 1% throttle and P/I/D of 35/32/4). Subsequent launches restore your last controls when the browser permits local storage. **Reset to defaults** restores the original simulator baseline (750 RPM, closed throttle, P/I/D of 20/10/2) and clears the live trace.
 

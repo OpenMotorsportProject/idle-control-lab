@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Neural Dynamics · Idle Control Lab</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="neural.css"><script defer src="neural-wasm.js"></script><script defer src="neural.js"></script></head>
+<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="neural.css"><script defer src="neural-wasm.js"></script><script defer src="network-diagram.js"></script><script defer src="neural.js"></script></head>
 <body><main id="neural-lab">
 <nav aria-label="Lab pages"><a href="index.html">Idle simulator</a><a href="neural.html" aria-current="page">Neural dynamics</a><a href="manual.html">Manual</a></nav>
 <header><div><h1>Neural dynamics</h1><p id="model-description">Fitting a network to the simulated engine…</p></div>
@@ -9,6 +9,22 @@
 <p role="status" id="load-status">Starting the Rust model…</p>
 <div id="ready" hidden>
 <div class="metrics"><div><span>Trained loss</span><strong id="base-loss"></strong></div><div><span>Edited loss</span><strong id="edit-loss"></strong></div><div><span>Change in loss</span><strong id="delta-loss"></strong></div><div><span>Held-out RMSE · edited</span><strong id="holdout"></strong></div></div>
+<section class="network-panel" aria-labelledby="network-heading">
+<div class="network-map">
+<div class="network-heading"><h2 id="network-heading">Network layout</h2>
+<fieldset class="axis-picker"><legend>Assign to</legend>
+<label><input type="radio" name="diagram-axis" value="x" checked><span>X axis</span></label>
+<label><input type="radio" name="diagram-axis" value="y"><span>Y axis</span></label></fieldset></div>
+<p>Choose X or Y, then select a connection for its weight or a hidden or output node for its bias.</p>
+<svg id="network-diagram" viewBox="0 0 391 225" role="group" aria-label="Selectable neural network weights and biases"></svg>
+</div>
+<div class="network-editor">
+<h3>Parameter offsets</h3>
+<div class="parameter"><label class="x-label">X coordinate<select id="axis-x"></select></label><label>Offset <output id="out-x"></output><input id="dx" aria-label="X coordinate offset" type="range" min="-0.8" max="0.8" step="0.01" value="0"></label></div>
+<div class="parameter"><label class="y-label">Y coordinate<select id="axis-y"></select></label><label>Offset <output id="out-y"></output><input id="dy" aria-label="Y coordinate offset" type="range" min="-0.8" max="0.8" step="0.01" value="0"></label></div>
+<button id="restore">Restore trained values</button>
+<p class="slice-note">Changing coordinates resets both offsets.</p>
+</div></section>
 <div class="neural-plots">
 <section class="graph"><h2>Loss landscape</h2><p>Parameter offsets from the trained values × training MSE</p>
 <canvas id="land" tabindex="0" aria-label="Rotatable two-parameter training loss surface. Drag or use arrow keys to rotate."></canvas>
@@ -16,11 +32,7 @@
 <section class="graph"><h2 id="phase-title">Engine phase trajectory</h2><p id="phase-desc"></p>
 <canvas id="motion" tabindex="0" aria-label="Rotatable 3D motion plot. Drag or use arrow keys to rotate."></canvas>
 <div class="key"><span class="ref-key">Reference</span><span class="base-key">Trained</span><span class="edit-key">Edited</span></div></section></div>
-<div class="neural-controls">
-<section><h2>Network parameters</h2><p>Choose two coordinates. All other parameters stay at their trained values.</p>
-<div class="parameter"><label>X coordinate<select id="axis-x"></select></label><label>Offset <output id="out-x"></output><input id="dx" type="range" min="-0.8" max="0.8" step="0.01" value="0"></label></div>
-<div class="parameter"><label>Y coordinate<select id="axis-y"></select></label><label>Offset <output id="out-y"></output><input id="dy" type="range" min="-0.8" max="0.8" step="0.01" value="0"></label></div>
-<button id="restore">Restore trained values</button></section>
+<div class="neural-controls motion-controls">
 <section><h2>Motion replay</h2><p id="scenario-info"></p><label id="event-label">Input event<select id="event"><option value="0">A/C load cycle</option><option value="1">Throttle blip and release</option></select></label>
 <label>Simulation time <output id="time"></output><input id="scrub" type="range" min="0" max="12" step="0.04" value="0"></label>
 <div class="actions"><button id="play" class="primary">Play</button><button id="restart">Replay from start</button></div>

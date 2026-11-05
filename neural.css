@@ -27,3 +27,72 @@ nav a[aria-current=page] {font-weight:650;color:var(--action);text-decoration:un
 .neural-controls .reading {margin:11px 0 0;font-variant-numeric:tabular-nums}
 @media(max-width:760px){.neural-plots,.neural-controls {grid-template-columns:1fr}.metrics {grid-template-columns:1fr 1fr}.model-choice {width:100%}}
 @media(max-width:410px){.parameter {grid-template-columns:1fr}.parameter input {margin-bottom:6px}}
+
+.network-panel {
+  --axis-x:light-dark(#006b60,#7ee0cf);
+  --axis-y:light-dark(#78489d,#d8adf4);
+  display:grid;grid-template-columns:1.45fr 1fr;margin-top:17px;
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+}
+.network-map,.network-editor {min-width:0;padding:16px 20px}
+.network-heading {display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:space-between}
+.network-editor h3 {margin:0 0 5px;font-size:16px;font-weight:620}
+.network-map p,.slice-note {font-size:14px;margin-top:4px}
+.network-editor {border-left:1px solid var(--border);align-self:stretch;display:grid;align-content:center;gap:8px}
+.network-editor .parameter {grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px}
+.network-editor label {font-size:14px}
+.network-editor output {float:right;font-size:12px}
+.network-editor #restore {justify-self:start}
+.network-editor .slice-note {font-size:12px;margin:0}
+.axis-picker {display:flex;gap:0;padding:0;margin:0 0 2px;border:0}
+.axis-picker legend {float:left;margin-right:12px;align-self:center;font-size:14px;line-height:32px}
+.axis-picker label {position:relative;cursor:pointer}
+.axis-picker input {position:absolute;opacity:0;width:1px;height:1px}
+.axis-picker span {display:block;padding:5px 13px;border:1px solid var(--border);font-weight:600}
+.axis-picker label:first-of-type span {border-radius:6px 0 0 6px}
+.axis-picker label:last-of-type span {border-radius:0 6px 6px 0}
+.axis-picker input:checked + span {background:var(--axis-x);border-color:var(--axis-x);color:var(--panel)}
+.axis-picker input[value=y]:checked + span {background:var(--axis-y);border-color:var(--axis-y)}
+.axis-picker input:focus-visible + span {outline:2px solid var(--foreground);outline-offset:2px}
+.x-label {color:var(--axis-x);font-weight:650}
+.y-label {color:var(--axis-y);font-weight:650}
+#dx {accent-color:var(--axis-x)}
+#dy {accent-color:var(--axis-y)}
+#network-diagram {display:block;width:100%;max-width:540px;height:auto;margin:14px auto 0;user-select:none}
+#network-diagram text {text-anchor:middle;pointer-events:none}
+#network-diagram .layer-label {font-size:10px;font-weight:650;fill:var(--muted-foreground);letter-spacing:.03em}
+#network-diagram .node-label {font-size:11px;font-weight:610;dominant-baseline:middle}
+#network-diagram [data-parameter] {cursor:pointer}
+#network-diagram [data-axis=x],#network-diagram [data-coordinate=x] {--axis:var(--axis-x)}
+#network-diagram [data-axis=y],#network-diagram [data-coordinate=y] {--axis:var(--axis-y)}
+#network-diagram .wire-ink {fill:none;stroke:light-dark(#a3b6aa,#687d70);stroke-width:1.2;pointer-events:none}
+#network-diagram [data-axis=x] .wire-ink,#network-diagram [data-axis=y] .wire-ink {stroke:var(--axis);stroke-width:2.5}
+#network-diagram .wire-hit {fill:none;stroke:transparent;stroke-width:10;pointer-events:stroke}
+#network-diagram .weight-hit {fill:transparent}
+#network-diagram .weight-disc,#network-diagram .node-body {fill:var(--background);stroke:light-dark(#81968a,#809688);stroke-width:1.2}
+#network-diagram .weight-disc {fill:var(--panel)}
+#network-diagram .parameter-delta {font-size:10px;font-weight:700;fill:var(--axis);paint-order:stroke;stroke:var(--panel);stroke-width:3px;stroke-linejoin:round}
+#network-diagram .bias-disc {display:none}
+#network-diagram .axis-letter {font-size:9px;dominant-baseline:middle;font-weight:750;fill:var(--panel)}
+#network-diagram .weight-button:is([data-axis=x],[data-axis=y]) .weight-disc {r:7px;fill:var(--axis);stroke:var(--axis)}
+#network-diagram .bias-button:is([data-axis=x],[data-axis=y]) .node-body {stroke:var(--axis);stroke-width:2.4}
+#network-diagram .bias-button:is([data-axis=x],[data-axis=y]) .bias-disc {display:block;fill:var(--axis)}
+#network-diagram .node-end {display:none;stroke:var(--axis);stroke-width:2.5;stroke-linecap:round}
+#network-diagram .node-end.connected {display:block}
+#network-diagram [data-parameter]:hover .wire-ink {stroke:var(--foreground);stroke-width:2}
+#network-diagram .bias-button[data-axis=""]:is(:hover,:focus-visible) .node-body,
+#network-diagram .weight-button[data-axis=""]:is(:hover,:focus-visible) .weight-disc {stroke:var(--foreground);stroke-width:2.5}
+#network-diagram [role=button]:focus-visible {outline:2px dotted var(--foreground);outline-offset:2px}
+.motion-controls {grid-template-columns:1fr}
+@media(max-width:800px) {
+  .network-panel {grid-template-columns:1fr}
+  .network-editor {border-left:0;border-top:1px solid var(--border)}
+}
+@media(max-width:450px) {
+  .network-map,.network-editor {padding:14px 12px}
+  #network-diagram .layer-label {font-size:12px}
+  #network-diagram .node-label {font-size:13px}
+  #network-diagram .weight-hit {r:14px}
+  #network-diagram .parameter-delta {font-size:12px}
+  .network-editor .parameter {grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+}

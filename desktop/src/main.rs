@@ -27,7 +27,7 @@ fn asset(path: &str) -> Option<(&'static str, &'static [u8])> {
         "lab.css" => "text/css", "neural.css" => "text/css",
         "model.js" => "text/javascript", "optimizer.js" => "text/javascript",
         "app.js" => "text/javascript", "neural.js" => "text/javascript",
-        "neural-wasm.js" => "text/javascript",
+        "neural-wasm.js" => "text/javascript", "network-diagram.js" => "text/javascript",
     }
 }
 
@@ -110,6 +110,7 @@ mod tests {
     fn packaged_resources_are_exact_and_navigation_stays_local() {
         assert!(asset("/neural.html").is_some());
         assert!(asset("/neural-wasm.js").is_some());
+        assert!(asset("/network-diagram.js").is_some());
         for path in [
             "/../Cargo.toml",
             "/%2e%2e/model.js",

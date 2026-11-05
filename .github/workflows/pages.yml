@@ -24,7 +24,7 @@ jobs:
         run: |
           mkdir _site
           cp index.html neural.html manual.html lab.css neural.css _site/
-          cp model.js optimizer.js app.js neural-wasm.js neural.js _site/
+          cp model.js optimizer.js app.js neural-wasm.js network-diagram.js neural.js _site/
           cp -R LICENSE NOTICE third-party _site/
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:

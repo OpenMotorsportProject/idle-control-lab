@@ -14,6 +14,7 @@ figure path.flow {stroke:var(--action);stroke-width:2;fill:none}figcaption {font
 
 <h2>1. Make one edit you can predict</h2>
 <ol><li>Open <a href="neural.html">Neural dynamics</a>, choose <b>Idle engine</b>, and pause around 3 seconds into the A/C cycle. The reference, trained and edited engines start at the same 750 RPM.</li>
+<li>In <b>Network layout</b>, choose <b>Y axis</b>. Select the output node labeled <b>RPM/s</b> to choose its bias. Selecting a connection chooses its weight. The X and Y markers match the coordinate menus.</li>
 <li>Keep the default Y coordinate, <b>Output bias</b>. Move its offset to <b>+0.25</b>. At identical inputs the network now predicts exactly <b>200 RPM/s more acceleration</b>. The network’s output scale is 800 RPM/s per unit. As the edited engine gains speed, its RPM input changes, so the acceleration difference can change too.</li>
 <li>Watch the orange point move on the loss surface and the orange engine trace separate from the dashed trained trace. The whole event is recomputed from its original state, at the same playhead. Drag either plot to rotate it. Use the time slider to inspect a particular instant.</li>
 <li>Choose <b>Restore trained values</b>. The edited loss returns to the trained loss and the two prediction traces coincide.</li></ol>
@@ -59,6 +60,7 @@ field[1] -= 2.0 * v * z * u[0];  // −∂H/∂q</pre>
 <h3>Optimize a baseline</h3>
 <p><code>Fit::train</code> seeds the parameters and runs 900 full-batch Adam updates. It compares training loss every tenth update and keeps the best checkpoint. For idle, the model minimizes the squared acceleration error after division by 800 RPM/s. For the HNN, it minimizes the mean of the two squared derivative errors in normalized units (1 m/s and 1 N). Held-out RMSE is reported in RPM/s for idle and normalized derivative units for the HNN. Held-out examples never determine the checkpoint.</p>
 <h3>Change a weight and trace its consequences</h3>
+<p><code>network-diagram.js</code> lays out the weights and biases in the order used by the Rust model. Picking a connection or node supplies the same parameter index as its menu entry. The signed number beside a selection shows its offset from training.</p>
 <p><code>src/lib.rs</code> owns <code>Lab</code>. <code>Lab::slice</code> copies the trained parameters, replaces two coordinates, and evaluates training loss for each mesh vertex. <code>lab_edit</code> handles a live slider event. It adds both offsets to trained values, recomputes exact losses and rebuilds the trajectories. <code>src/motion.rs</code> contains the torque balance integration and fourth-order Runge–Kutta integrator. <code>neural.js</code> reads Rust’s numeric buffers, projects the 3D coordinates and draws them. The packaged Rust desktop shell lives in <code>desktop/src/main.rs</code>.</p>
 <h3>Reproduce the checks</h3>
 <pre>cargo test --release -p idle-neural

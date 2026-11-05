@@ -18,14 +18,19 @@
     const compact = n => n===0 ? '0' : Math.abs(n)<1e-12 ? '≈0' : Math.abs(n)<0.001 || Math.abs(n)>=10000 ? n.toExponential(2) : Number(n.toPrecision(4)).toString();
     const signed = n => (n>0?'+':'')+compact(n);
     function copy(ptr,n) {return Array.from(new Float64Array(rust.memory.buffer,ptr,n));}
-    function labels() {
-      const inputs=kind ? ['position','momentum'] : ['RPM','air torque','load'];
-      const names=[];
-      for (let i=1;i<=4;i++) {
-        for (const input of inputs) names.push('H'+i+' · '+input+' weight');
-        names.push('H'+i+' · hidden bias','H'+i+' · output weight');
-      }
-      return names.concat('Output bias');
+    let diagram;
+    const axisPickers = Array.from(document.querySelectorAll('input[name="diagram-axis"]'));
+    function activeAxis() { return axisPickers.find(input => input.checked).value; }
+    function selectFromDiagram(index) {
+      const select = $('axis-'+activeAxis());
+      if (Number(select.value) === index) return;
+      select.value = String(index);
+      setAxes(select.id);
+    }
+    function updateDiagram() {
+      const offsets = {x: Number($('dx').value), y: Number($('dy').value)};
+      diagram.update(Number($('axis-x').value), Number($('axis-y').value),
+        activeAxis(), offsets, rust.lab_value);
     }
     function setAxes(changed) {
       const x=$('axis-x'),y=$('axis-y');
@@ -46,8 +51,9 @@
       $('phase-desc').textContent=kind?'Position (m) × momentum (kg·m/s) × learned energy (J)':'RPM error × RPM/s × elapsed time (s)';
       $('scenario-info').textContent=kind?'A 1 kg mass on a 1 N/m spring starts at 0.8 m with zero momentum.':'All three engines receive the reference controller’s air torque and accessory load. Target '+cfg.target+' RPM, P/I/D '+[cfg.p,cfg.i,cfg.d].join(' / ')+'.';
       $('event-label').hidden=Boolean(kind);
+      diagram = buildNetworkDiagram($('network-diagram'), Boolean(kind), selectFromDiagram);
       for (const id of ['axis-x','axis-y']) {
-        $(id).replaceChildren(...labels().map((label,i)=>new Option(label,i)));
+        $(id).replaceChildren(...diagram.labels.map((label,i)=>new Option(label,i)));
       }
       $('axis-x').value=kind?'3':'4';
       $('axis-y').value=kind?'2':'20';
@@ -68,6 +74,7 @@
         const delta=Number($('d'+axis).value), value=rust.lab_value(Number($('axis-'+axis).value))+delta;
         $('out-'+axis).textContent=(delta>=0?'+':'')+delta.toFixed(2)+' → '+value.toFixed(3);
       }
+      updateDiagram();
       energyMesh=[];
       if (kind) {
         const n=19;
@@ -203,7 +210,17 @@
       });
     }
     $('kind').addEventListener('change',()=>{setModel();if(!playing)run(false);});
-    for(const id of ['axis-x','axis-y'])$(id).addEventListener('change',()=>setAxes(id));
+    for (const picker of axisPickers) {
+      picker.addEventListener('change', updateDiagram);
+      for (const id of ['axis-'+picker.value,'d'+picker.value]) {
+        $(id).addEventListener('focus', () => {
+          picker.checked = true;
+          updateDiagram();
+        });
+      }
+      const select = $('axis-'+picker.value);
+      select.addEventListener('change', () => { picker.checked = true; setAxes(select.id); });
+    }
     for(const id of ['dx','dy'])$(id).addEventListener('input',edit);
     $('restore').addEventListener('click',()=>{$('dx').value=0;$('dy').value=0;edit();});
     $('event').addEventListener('change',()=>{rust.lab_event(Number($('event').value),cfg.target,cfg.p,cfg.i,cfg.d,Number(cfg.feedforward));readPath();drawMotion();});

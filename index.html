@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>Idle Control Lab</title>
-  <link rel="icon" href="data:,">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="icons/idle-control.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
   <link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="neural.css">
   <script defer src="model.js"></script>
   <script defer src="optimizer.js"></script>
@@ -13,7 +14,7 @@
 </head>
 <body>
 <main id="live-idle-control">
-  <nav aria-label="Lab pages"><a href="index.html" aria-current="page">Idle simulator</a><a href="neural.html">Neural dynamics</a><a href="manual.html">Manual</a></nav>
+  <nav aria-label="Lab pages"><a class="lab-home" href="index.html" aria-current="page"><img src="icons/idle-control.svg" alt="" width="26" height="26">Idle simulator</a><a href="neural.html">Neural dynamics</a><a href="manual.html">Manual</a></nav>
   <header><div><h1>Idle Control Lab</h1><p>Warm engine in neutral</p></div>
     <div class="actions"><span data-status role="status"></span><button type="button" data-run>Pause</button></div>
   </header>

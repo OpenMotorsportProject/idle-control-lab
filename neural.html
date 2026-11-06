@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Neural Dynamics · Idle Control Lab</title>
-<link rel="icon" href="data:,">
+<link rel="icon" type="image/svg+xml" sizes="any" href="icons/idle-control.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 <link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="neural.css"><script defer src="neural-wasm.js"></script><script defer src="network-diagram.js"></script><script defer src="neural.js"></script></head>
 <body><main id="neural-lab">
-<nav aria-label="Lab pages"><a href="index.html">Idle simulator</a><a href="neural.html" aria-current="page">Neural dynamics</a><a href="manual.html">Manual</a></nav>
+<nav aria-label="Lab pages"><a class="lab-home" href="index.html"><img src="icons/idle-control.svg" alt="" width="26" height="26">Idle simulator</a><a href="neural.html" aria-current="page">Neural dynamics</a><a href="manual.html">Manual</a></nav>
 <header><div><h1>Neural dynamics</h1><p id="model-description">Fitting a network to the simulated engine…</p></div>
 <label class="model-choice">Model<select id="kind"><option value="0">Idle engine · acceleration network</option><option value="1">Spring–mass · Hamiltonian network</option></select></label></header>
 <p role="status" id="load-status">Starting the Rust model…</p>

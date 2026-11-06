@@ -21,6 +21,7 @@ fn asset(path: &str) -> Option<(&'static str, &'static [u8])> {
         };
     }
     assets! {
+        "icons/idle-control.svg" => "image/svg+xml", "icons/apple-touch-icon.png" => "image/png",
         "index.html" => "text/html; charset=utf-8",
         "neural.html" => "text/html; charset=utf-8",
         "manual.html" => "text/html; charset=utf-8",
@@ -50,11 +51,22 @@ fn local_page(url: &str) -> bool {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let event_loop = EventLoop::new();
-    let window = WindowBuilder::new()
+    let builder = WindowBuilder::new()
         .with_title("Idle Control Lab")
         .with_inner_size(LogicalSize::new(1160., 840.))
-        .with_min_inner_size(LogicalSize::new(580., 520.))
-        .build(&event_loop)?;
+        .with_min_inner_size(LogicalSize::new(580., 520.));
+    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    let builder = {
+        let pixels: &[u8; 64 * 64 * 4] = include_bytes!("../icons/window-64.rgba");
+        let icon = tao::window::Icon::from_rgba(pixels.to_vec(), 64, 64)?;
+        #[cfg(target_os = "windows")]
+        let builder = {
+            use tao::platform::windows::WindowBuilderExtWindows;
+            builder.with_taskbar_icon(Some(icon.clone()))
+        };
+        builder.with_window_icon(Some(icon))
+    };
+    let window = builder.build(&event_loop)?;
     let builder = WebViewBuilder::new()
         .with_custom_protocol("idlelab".into(), |_, request| {
             let reply = Response::builder().header("X-Content-Type-Options", "nosniff");

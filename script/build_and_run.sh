@@ -12,7 +12,7 @@ bundle="$stage/Idle Control Lab.app"
 mkdir -p "$bundle/Contents/MacOS" "$bundle/Contents/Resources"
 if [[ "$mode" != --build ]]; then pkill -x idle-control-lab || true; fi
 cp target/release/idle-control-lab "$bundle/Contents/MacOS/idle-control-lab"
-cp LICENSE NOTICE "$bundle/Contents/Resources/"
+cp LICENSE NOTICE desktop/icons/IdleControlLab.icns "$bundle/Contents/Resources/"
 cp -R third-party "$bundle/Contents/Resources/"
 cat > "$bundle/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -22,6 +22,7 @@ cat > "$bundle/Contents/Info.plist" <<'PLIST'
 <key>CFBundleExecutable</key><string>idle-control-lab</string>
 <key>CFBundleIdentifier</key><string>local.idlecontrol.lab</string>
 <key>CFBundleName</key><string>Idle Control Lab</string>
+<key>CFBundleIconFile</key><string>IdleControlLab.icns</string>
 <key>CFBundleVersion</key><string>1</string>
 <key>CFBundleShortVersionString</key><string>0.1.0</string>
 <key>LSMinimumSystemVersion</key><string>11.0</string>

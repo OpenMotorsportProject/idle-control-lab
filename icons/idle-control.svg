@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 64 64">
+  <title>Idle Control Lab</title>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#183b32" stroke="#55736a"/>
+  <path d="M 12 43 C 15.5 31 24.5 16 38 16 C 47.5 16 52.5 23.5 50.5 32.5 C 48.5 42 39 48.5 30.5 46 C 24.5 44.3 22.5 39 25 34 C 27.4 29.2 32 27.8 35.5 30" fill="none" stroke="#f1f3df" stroke-width="3.7" stroke-linecap="round"/>
+  <circle cx="35.5" cy="30" r="4.2" fill="#9ed5b3"/>
+</svg>

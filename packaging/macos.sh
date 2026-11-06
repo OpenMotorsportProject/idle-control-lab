@@ -12,8 +12,8 @@ app="$unpacked/Idle Control Lab.app"
 binary="$app/Contents/MacOS/idle-control-lab"
 test "$(plutil -extract CFBundleShortVersionString raw -o - "$app/Contents/Info.plist")" = "$RELEASE_VERSION"
 codesign --verify --strict --deep "$app"
-lipo "$binary" -verify_arch arm64 x86_64
 for arch in arm64 x86_64; do
+  lipo "$binary" -verify_arch "$arch"
   if /usr/bin/arch "-$arch" /usr/bin/true; then
     /usr/bin/arch "-$arch" "$binary" & pid=$!
     sleep 5

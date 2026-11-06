@@ -8,7 +8,7 @@ For the offline desktop app, download a package from the [v0.1.1 release](https:
 
 | Platform | Install and open |
 | --- | --- |
-| Windows x64 | Extract the Windows ZIP and open `idle-control-lab.exe`. It uses the [Evergreen WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/). The executable is unsigned. |
+| Windows x64 | Extract the Windows ZIP and open `idle-control-lab.exe`. It uses the [Evergreen WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/) and [Microsoft Visual C++ x64 Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe). The executable is unsigned. |
 | Ubuntu 24.04 x64 | From the download directory, run `sudo apt install ./idle-control-lab_0.1.1_amd64.deb`, then launch **Idle Control Lab** from the applications menu. APT installs the GTK and WebKitGTK dependencies. |
 | macOS, Apple silicon or Intel | Unzip the universal archive and double-click **Idle Control Lab.app**. This build is ad hoc signed and unnotarized. If macOS requests approval, follow [Apple’s per-app opening instructions](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac). |
 

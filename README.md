@@ -8,17 +8,21 @@ The idle simulator shows a throttle blip and recovery at 750 RPM, with its RPM a
 
 <a href="https://openmotorsportproject.github.io/idle-control-lab/">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/idle-simulator-dark.png">
-    <img src="docs/screenshots/idle-simulator-light.png" alt="Idle simulator showing a throttle blip and recovery, RPM and phase plots, throttle and PID controls, and gain optimization." width="1240">
+    <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/screenshots/idle-simulator-dark.png">
+    <source media="(prefers-reduced-motion: reduce)" srcset="docs/screenshots/idle-simulator-light.png">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/demos/throttle-blip-dark.gif">
+    <img src="docs/demos/throttle-blip-light.gif" alt="Idle simulator showing a throttle blip and recovery, RPM and phase plots, throttle and PID controls, and gain optimization." width="960">
   </picture>
 </a>
 
-The neural lab highlights an edited air-torque weight and output bias alongside the loss surface and phase trajectory.
+The neural lab shows an output weight being changed and restored while the loss and phase plots respond.
 
 <a href="https://openmotorsportproject.github.io/idle-control-lab/neural.html">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/network-diagram-dark.png">
-    <img src="docs/screenshots/network-diagram-light.png" alt="Selectable neural network diagram with the H2 air-torque weight and output bias highlighted, showing their offsets and the resulting loss and motion." width="1240">
+    <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/screenshots/network-diagram-dark.png">
+    <source media="(prefers-reduced-motion: reduce)" srcset="docs/screenshots/network-diagram-light.png">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/demos/network-weight-dark.gif">
+    <img src="docs/demos/network-weight-light.gif" alt="Neural network demo showing a selected connection, a changing weight offset, and the resulting loss and phase trajectory." width="960">
   </picture>
 </a>
 

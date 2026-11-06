@@ -4,6 +4,24 @@ Adjust the throttle and PID gains in the idle simulator, or change a network wei
 
 **[Launch the idle simulator](https://openmotorsportproject.github.io/idle-control-lab/)** · [Open the neural lab](https://openmotorsportproject.github.io/idle-control-lab/neural.html) · [Read the illustrated manual](https://openmotorsportproject.github.io/idle-control-lab/manual.html)
 
+The idle simulator shows a throttle blip and recovery at 750 RPM, with its RPM and phase plots above the controls.
+
+<a href="https://openmotorsportproject.github.io/idle-control-lab/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/idle-simulator-dark.png">
+    <img src="docs/screenshots/idle-simulator-light.png" alt="Idle simulator showing a throttle blip and recovery, RPM and phase plots, throttle and PID controls, and gain optimization." width="1240">
+  </picture>
+</a>
+
+The neural lab highlights an edited air-torque weight and output bias alongside the loss surface and phase trajectory.
+
+<a href="https://openmotorsportproject.github.io/idle-control-lab/neural.html">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/network-diagram-dark.png">
+    <img src="docs/screenshots/network-diagram-light.png" alt="Selectable neural network diagram with the H2 air-torque weight and output bias highlighted, showing their offsets and the resulting loss and motion." width="1240">
+  </picture>
+</a>
+
 For the offline desktop app, download a package from the [v0.1.1 release](https://github.com/OpenMotorsportProject/idle-control-lab/releases/tag/v0.1.1).
 
 | Platform | Install and open |

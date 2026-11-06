@@ -18,6 +18,8 @@ with tempfile.TemporaryDirectory() as scratch:
         master = source.convert("RGBA")
     scale = Image.Resampling.LANCZOS
 
+    master.save(native / "IdleControlLab.ico", sizes=[(n, n) for n in (16, 24, 32, 48, 64, 128, 256)])
+
     # Tao accepts RGBA pixels directly on Linux and Windows.
     (native / "window-64.rgba").write_bytes(master.resize((64, 64), scale).tobytes())
 

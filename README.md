@@ -4,7 +4,15 @@ Adjust the throttle and PID gains in the idle simulator, or change a network wei
 
 **[Launch the idle simulator](https://openmotorsportproject.github.io/idle-control-lab/)** · [Open the neural lab](https://openmotorsportproject.github.io/idle-control-lab/neural.html) · [Read the illustrated manual](https://openmotorsportproject.github.io/idle-control-lab/manual.html)
 
-To use the lab offline, extract the source archive and open **index.html** in a browser.
+For the offline desktop app, download a package from the [v0.1.1 release](https://github.com/OpenMotorsportProject/idle-control-lab/releases/tag/v0.1.1).
+
+| Platform | Install and open |
+| --- | --- |
+| Windows x64 | Extract the Windows ZIP and open `idle-control-lab.exe`. It uses the [Evergreen WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/). The executable is unsigned. |
+| Ubuntu 24.04 x64 | From the download directory, run `sudo apt install ./idle-control-lab_0.1.1_amd64.deb`, then launch **Idle Control Lab** from the applications menu. APT installs the GTK and WebKitGTK dependencies. |
+| macOS, Apple silicon or Intel | Unzip the universal archive and double-click **Idle Control Lab.app**. This build is ad hoc signed and unnotarized. If macOS requests approval, follow [Apple’s per-app opening instructions](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac). |
+
+You can also open **index.html** directly from the extracted source archive. Each release download has a SHA-256 digest in **SHA256SUMS.txt**.
 
 The first launch uses the settings saved from the original experiment (750 RPM target, 1% throttle and P/I/D of 35/32/4). Subsequent launches restore your last controls when the browser permits local storage. **Reset to defaults** restores the original simulator baseline (750 RPM, closed throttle, P/I/D of 20/10/2) and clears the live trace.
 
@@ -66,14 +74,4 @@ For release binaries, use `python script/release-build.py -p idle-control-lab` (
 
 ## Open-source release
 
-Idle Control Lab's original source and documentation are licensed under [Apache License 2.0](LICENSE). See [NOTICE](NOTICE) and [third-party notices](third-party/README.md). Version 0.1.0 includes a prebuilt offline browser module. Extract the source archive and open **index.html** for the PID simulator or **neural.html** for the neural lab. Build the native shell for your platform from that source. See the [release verification record](RELEASE.md) for the platforms tested and the outstanding Windows check.
-
-To recreate a clean source distribution from a committed revision, run:
-
-```sh
-mkdir -p dist
-git archive --format=tar.gz --prefix=idle-control-lab-0.1.0/ -o dist/idle-control-lab-0.1.0-source.tar.gz HEAD
-shasum -a 256 dist/idle-control-lab-0.1.0-source.tar.gz
-```
-
-The archive excludes Git history, local build outputs, signing material and editor settings. The pre-release local history contains an older chat-generated display wrapper. Use the reviewed source archive to initialize a public repository independently of that history.
+Idle Control Lab's original source and documentation are licensed under [Apache License 2.0](LICENSE). See [NOTICE](NOTICE) and [third-party notices](third-party/README.md). The release includes native desktop packages and a source archive with the prebuilt browser model. The desktop packages include notices for the dependencies compiled for that target. Maintainers can run **Build desktop downloads** in GitHub Actions to produce and test all three packages from the selected commit.

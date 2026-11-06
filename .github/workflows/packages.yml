@@ -1,0 +1,50 @@
+name: Build desktop downloads
+on: workflow_dispatch
+permissions:
+  contents: read
+
+jobs:
+  package:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    env:
+      RUSTUP_TOOLCHAIN: 1.95.0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - run: rustup toolchain install 1.95.0 --profile minimal
+      - name: Read the desktop version
+        shell: bash
+        run: |
+          version=$(python -c 'import tomllib; print(tomllib.load(open("desktop/Cargo.toml","rb"))["package"]["version"])')
+          echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
+      - name: Build, install and open the Linux package
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libxdo-dev dpkg-dev xvfb xauth at-spi2-core python3-pyatspi
+          ./packaging/linux.sh
+      - name: Build and launch the universal Mac archive
+        if: runner.os == 'macOS'
+        run: ./packaging/macos.sh
+      - name: Build and launch the Windows ZIP
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./packaging/windows.ps1
+      - name: Upload tested download
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: desktop-${{ matrix.os }}
+          path: |
+            dist/*.deb
+            dist/*.zip
+          if-no-files-found: error
+          retention-days: 7

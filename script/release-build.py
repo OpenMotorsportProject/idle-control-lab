@@ -18,5 +18,6 @@ args = flags.split("\x1f") if flags else []
 for path, dest in mapping:
     args.append(f"--remap-path-prefix={path}={dest}")
 env = dict(os.environ, CARGO_ENCODED_RUSTFLAGS="\x1f".join(args))
-subprocess.run(["cargo", "build", "--release", "--locked", *sys.argv[1:]], cwd=root,
+command = "rustc" if "--" in sys.argv[1:] else "build"
+subprocess.run(["cargo", command, "--release", "--locked", *sys.argv[1:]], cwd=root,
                env=env, check=True)

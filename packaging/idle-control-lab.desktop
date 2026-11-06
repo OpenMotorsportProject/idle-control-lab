@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Idle Control Lab
+Comment=Explore idle control, neural networks and phase plots
+Exec=idle-control-lab
+Icon=idle-control-lab
+Terminal=false
+Categories=Education;Science;

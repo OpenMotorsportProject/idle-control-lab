@@ -911,7 +911,7 @@ dependencies = [
 
 [[package]]
 name = "idle-control-lab"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "open",
  "tao",
@@ -920,7 +920,7 @@ dependencies = [
 
 [[package]]
 name = "idle-neural"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "idna"
